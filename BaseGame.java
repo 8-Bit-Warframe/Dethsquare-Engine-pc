@@ -10,6 +10,7 @@ import com.ezardlabs.dethsquare.Screen;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.ImageObserver;
@@ -19,14 +20,14 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 public abstract class BaseGame extends JFrame {
-//	private BufferedImage buffer;
 	private VolatileImage vBuffer;
 	public static Graphics2D graphics;
 	public static ImageObserver imageObserver;
 
 	public BaseGame() {
+		setTitle("Lost Sector");
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
-//		setUndecorated(true);
+		setUndecorated(true);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		addKeyListener(new KeyListener() {
 			@Override
@@ -38,6 +39,7 @@ public abstract class BaseGame extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
 				for (OnKeyListener okl : Input.onKeyListeners) {
 					okl.onKeyDown(e.getKeyChar());
 				}
@@ -50,33 +52,25 @@ public abstract class BaseGame extends JFrame {
 				}
 			}
 		});
+		setFocusable(true);
+		onResize((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
+				(int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 		create();
 		GameObject.startAll();
 		Renderer.init();
 		Collider.init();
 		setVisible(true);
-		onResize(getWidth(), getHeight());
+		vBuffer = createVolatileImage(getWidth(), getHeight());
 	}
 
 	@Override
 	public void paint(Graphics g) {
-		if (vBuffer == null) repaint();
+		long start = System.currentTimeMillis();
+		if (vBuffer == null) {
+			repaint();
+			return;
+		}
 		update();
-		do {
-			int returnCode = vBuffer.validate(getGraphicsConfiguration());
-			if (returnCode == VolatileImage.IMAGE_RESTORED) {
-				renderOffscreen();
-			} else if (returnCode == VolatileImage.IMAGE_INCOMPATIBLE) {
-				vBuffer = createVolatileImage(getWidth(), getHeight());
-				renderOffscreen();
-			}
-			renderOffscreen();
-			g.drawImage(vBuffer, 0, 0, this);
-		} while (vBuffer.contentsLost());
-		repaint();
-	}
-
-	private void renderOffscreen() {
 		do {
 			if (vBuffer.validate(getGraphicsConfiguration()) == VolatileImage.IMAGE_INCOMPATIBLE) {
 				vBuffer = createVolatileImage(getWidth(), getHeight());
@@ -84,11 +78,18 @@ public abstract class BaseGame extends JFrame {
 			graphics = vBuffer.createGraphics();
 			graphics.setColor(Color.BLACK);
 			graphics.fillRect(0, 0, getWidth(), getHeight());
-			long start = System.currentTimeMillis();
 			render();
-			System.out.println(System.currentTimeMillis() - start);
 			graphics.dispose();
 		} while (vBuffer.contentsLost());
+		g.drawImage(vBuffer, 0, 0, this);
+		if (System.currentTimeMillis() - start < 16) {
+			try {
+				Thread.sleep(16 - (System.currentTimeMillis() - start));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		repaint();
 	}
 
 	public abstract void create();
@@ -105,9 +106,7 @@ public abstract class BaseGame extends JFrame {
 		Screen.scale = (float) width / 1920f;
 		Screen.width = width;
 		Screen.height = height;
-//		buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		vBuffer = createVolatileImage(width, height);
-//		graphics = (Graphics2D) buffer.getGraphics();
 		imageObserver = this;
 	}
 }
