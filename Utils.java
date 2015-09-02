@@ -25,8 +25,14 @@ public class Utils {
 	}
 
 	public static int[] loadImage(String path) {
+		if (Thread.currentThread().getContextClassLoader()
+				  .getResourceAsStream(path.replace("assets/", "")) == null)
+			throw new Error("Image at " + path + " could not be " +
+					"found");
 		try {
-			images.add(temp = ImageIO.read(new BufferedInputStream(BaseGame.class.getResourceAsStream(path.replace("assets", "")))));
+			images.add(temp = ImageIO.read(new BufferedInputStream(
+					Thread.currentThread().getContextClassLoader()
+						  .getResourceAsStream(path.replace("assets/", "")))));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new int[3];
@@ -35,17 +41,33 @@ public class Utils {
 	}
 
 	public static BufferedReader getReader(String path) throws IOException {
-		return new BufferedReader(new InputStreamReader(BaseGame.class.getResourceAsStream(path.replace("assets", ""))));
+		return new BufferedReader(new InputStreamReader(
+				Thread.currentThread().getContextClassLoader()
+					  .getResourceAsStream(path.replace("assets/", ""))));
 	}
 
-	public static void render(int textureName, FloatBuffer vertexBuffer, FloatBuffer uvBuffer, short[] indices, ShortBuffer indexBuffer) {
+	public static void render(int textureName, FloatBuffer vertexBuffer, FloatBuffer uvBuffer,
+			short[] indices, ShortBuffer indexBuffer) {
 		temp = images.get(textureName);
 		float[] vertices = new float[vertexBuffer.capacity()];
+		vertexBuffer.position(0);
 		vertexBuffer.get(vertices);
 		float[] uvs = new float[uvBuffer.capacity()];
+		uvBuffer.position(0);
 		uvBuffer.get(uvs);
 		for (int i = 0; i < vertices.length / 12; i++) {
-			BaseGame.graphics.drawImage(temp, (int) (vertices[i * 12] - (Camera.main.transform.position.x * Screen.scale)), (int) (vertices[(i * 12) + 4] - (Camera.main.transform.position.y * Screen.scale)), (int) (vertices[(i * 12) + 6] - (Camera.main.transform.position.x * Screen.scale)), (int) (vertices[(i * 12) + 10] - (Camera.main.transform.position.y * Screen.scale)), (int) (uvs[i * 8] * temp.getWidth()), (int) (uvs[(i * 8) + 5] * temp.getHeight()), (int) (uvs[(i * 8) + 4] * temp.getWidth()), (int) (uvs[(i * 8) + 1] * temp.getHeight()), BaseGame.imageObserver);
+			BaseGame.graphics.drawImage(temp,
+					(int) (vertices[i * 12] - (Camera.main.transform.position.x * Screen.scale)),
+					(int) (vertices[(i * 12) + 4] -
+							(Camera.main.transform.position.y * Screen.scale)),
+					(int) (vertices[(i * 12) + 6] -
+							(Camera.main.transform.position.x * Screen.scale)),
+					(int) (vertices[(i * 12) + 10] -
+							(Camera.main.transform.position.y * Screen.scale)),
+					(int) (uvs[i * 8] * temp.getWidth()),
+					(int) (uvs[(i * 8) + 5] * temp.getHeight()),
+					(int) (uvs[(i * 8) + 4] * temp.getWidth()),
+					(int) (uvs[(i * 8) + 1] * temp.getHeight()), BaseGame.imageObserver);
 		}
 	}
 
