@@ -1,16 +1,22 @@
 package com.ezardlabs.dethsquare.util;
 
+import com.ezardlabs.dethsquare.AudioSource.AudioClip;
 import com.ezardlabs.dethsquare.Camera;
 import com.ezardlabs.dethsquare.Screen;
+import com.ezardlabs.dethsquare.audio.jcraft.OggMusic;
+
+import org.apache.commons.io.IOUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -77,6 +83,43 @@ public class Utils {
 
 	public static void setCameraPosition(Camera camera) {
 		if (camera != null) {
+		}
+	}
+
+	private static HashMap<AudioClip, Thread> playingAudio = new HashMap<>();
+
+	public static void playAudio(final AudioClip audioClip) {
+		playAudio(audioClip, false);
+	}
+
+	public static void playAudio(final AudioClip audioClip, final boolean loop) {
+		Thread t = new Thread() {
+			byte[] data;
+
+			@Override
+			public void run() {
+				OggMusic ogg = new OggMusic(Thread.currentThread());
+				ogg.setVolume(100);
+				ogg.setMute(false);
+				try {
+					data = IOUtils.toByteArray(Thread.currentThread().getContextClassLoader()
+											  .getResourceAsStream(audioClip.getPath()));
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
+				}
+				do {
+					ogg.playOgg(new ByteArrayInputStream(data));
+				} while(loop);
+			}
+		};
+		playingAudio.put(audioClip, t);
+		t.start();
+	}
+
+	public static void stopAudio(AudioClip audioClip) {
+		if (playingAudio.containsKey(audioClip)) {
+			playingAudio.remove(audioClip).stop();
 		}
 	}
 }
