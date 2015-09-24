@@ -3,7 +3,7 @@ package com.ezardlabs.dethsquare.util;
 import com.ezardlabs.dethsquare.AudioSource.AudioClip;
 import com.ezardlabs.dethsquare.Camera;
 import com.ezardlabs.dethsquare.Screen;
-import com.ezardlabs.dethsquare.audio.jcraft.OggMusic;
+import com.ezardlabs.dethsquare.util.audio.OggMusic;
 
 import org.apache.commons.io.IOUtils;
 
