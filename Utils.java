@@ -60,7 +60,7 @@ public class Utils {
 	}
 
 	public static void render(int textureName, FloatBuffer vertexBuffer, FloatBuffer uvBuffer,
-			short[] indices, ShortBuffer indexBuffer) {
+			int numIndices, ShortBuffer indexBuffer) {
 		temp = images.get(textureName);
 		float[] vertices = new float[vertexBuffer.capacity()];
 		vertexBuffer.position(0);
@@ -68,7 +68,7 @@ public class Utils {
 		float[] uvs = new float[uvBuffer.capacity()];
 		uvBuffer.position(0);
 		uvBuffer.get(uvs);
-		for (int i = 0; i < vertices.length / 12; i++) {
+		for (int i = 0; i < numIndices / 6; i++) {
 			BaseGame.graphics.drawImage(temp,
 					(int) (vertices[i * 12] - (Camera.main.transform.position.x * Screen.scale)),
 					(int) (vertices[(i * 12) + 4] -
