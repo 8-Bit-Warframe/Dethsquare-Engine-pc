@@ -6,28 +6,85 @@ import com.ezardlabs.dethsquare.Input;
 import com.ezardlabs.dethsquare.Input.KeyCode;
 import com.ezardlabs.dethsquare.Renderer;
 import com.ezardlabs.dethsquare.Screen;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.awt.GLCanvas;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.ImageObserver;
-import java.awt.image.VolatileImage;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 public abstract class BaseGame extends JFrame {
-	private VolatileImage vBuffer;
-	public static Graphics2D graphics;
-	public static ImageObserver imageObserver;
 
 	public BaseGame() {
+		GLProfile glProfile = GLProfile.get(GLProfile.GL2);
+		GLCapabilities glCapabilities = new GLCapabilities(glProfile);
+
+		GLCanvas glCanvas = new GLCanvas(glCapabilities);
+		glCanvas.addGLEventListener(new GLEventListener() {
+			@Override
+			public void init(GLAutoDrawable glAutoDrawable) {
+				GL2 gl2 = glAutoDrawable.getGL().getGL2();
+				Utils.setGL2(gl2);
+//
+				gl2.glClearColor(255, 0.0f, 0.0f, 1);
+//
+//				gl2.glEnable(GL2.GL_BLEND);
+//				gl2.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA);
+//
+				int vertexShader = Utils.loadShader(GL2.GL_VERTEX_SHADER, ShaderTools.vsImage);
+				int fragmentShader = Utils.loadShader(GL2.GL_FRAGMENT_SHADER, ShaderTools.fsImage);
+
+				ShaderTools.spImage = gl2.glCreateProgram();
+				gl2.glAttachShader(ShaderTools.spImage, vertexShader);
+				gl2.glAttachShader(ShaderTools.spImage, fragmentShader);
+				gl2.glLinkProgram(ShaderTools.spImage);
+				gl2.glValidateProgram(ShaderTools.spImage);
+
+				gl2.glUseProgram(ShaderTools.spImage);
+
+				create();
+
+				GameObject.startAll();
+				Renderer.init();
+				Collider.init();
+			}
+
+			@Override
+			public void dispose(GLAutoDrawable glAutoDrawable) {
+			}
+
+			@Override
+			public void display(GLAutoDrawable glAutoDrawable) {
+				Utils.setGL2(glAutoDrawable.getGL().getGL2());
+				glAutoDrawable.getGL().getGL2().glClear(GL2.GL_COLOR_BUFFER_BIT);
+//				update();
+//
+//				Utils.setCameraPosition(Camera.main);
+//
+//				render();
+//
+//				repaint();
+			}
+
+			@Override
+			public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width,
+					int height) {
+				onResize(width, height);
+				Utils.onScreenSizeChanged(width, height);
+			}
+		}); glCanvas.setSize(1000, 750);
+		getContentPane().add(glCanvas);
+
 		setTitle("Lost Sector");
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setUndecorated(true);
+//		setExtendedState(JFrame.MAXIMIZED_BOTH);
+//		setUndecorated(true);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		addKeyListener(new KeyListener() {
 			@Override
@@ -365,42 +422,14 @@ public abstract class BaseGame extends JFrame {
 			}
 		});
 		setFocusable(true);
-		onResize((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(), (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
-		create();
-		GameObject.startAll();
-		Renderer.init();
-		Collider.init();
+		onResize((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
+				(int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
+//		create();
+//		GameObject.startAll();
+//		Renderer.init();
+//		Collider.init();
+		pack();
 		setVisible(true);
-		vBuffer = createVolatileImage(getWidth(), getHeight());
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		long start = System.currentTimeMillis();
-		if (vBuffer == null) {
-			repaint();
-			return;
-		}
-		update();
-		do {
-			if (vBuffer.validate(getGraphicsConfiguration()) == VolatileImage.IMAGE_INCOMPATIBLE) {
-				vBuffer = createVolatileImage(getWidth(), getHeight());
-			}
-			graphics = vBuffer.createGraphics();
-			graphics.setColor(Color.BLACK);
-			graphics.fillRect(0, 0, getWidth(), getHeight());
-			render();
-			graphics.dispose();
-		} while (vBuffer.contentsLost());
-		g.drawImage(vBuffer, 0, 0, this);
-		if (System.currentTimeMillis() - start < 16) {
-			try {
-				Thread.sleep(16 - (System.currentTimeMillis() - start));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		repaint();
 	}
 
 	public abstract void create();
@@ -418,7 +447,5 @@ public abstract class BaseGame extends JFrame {
 		Screen.scale = (float) width / 1920f;
 		Screen.width = width;
 		Screen.height = height;
-		vBuffer = createVolatileImage(width, height);
-		imageObserver = this;
 	}
 }
