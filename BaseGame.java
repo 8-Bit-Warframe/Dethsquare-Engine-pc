@@ -32,6 +32,8 @@ public abstract class BaseGame extends JFrame {
 			public void init(GLAutoDrawable glAutoDrawable) {
 				GL2 gl2 = glAutoDrawable.getGL().getGL2();
 				Utils.setGL2(gl2);
+
+				gl2.glEnable(GL2.GL_TEXTURE_2D);
 //
 				gl2.glClearColor(255, 0.0f, 0.0f, 1);
 //
@@ -79,7 +81,8 @@ public abstract class BaseGame extends JFrame {
 				onResize(width, height);
 				Utils.onScreenSizeChanged(width, height);
 			}
-		}); glCanvas.setSize(1000, 750);
+		});
+		glCanvas.setSize(1000, 750);
 		getContentPane().add(glCanvas);
 
 		setTitle("Lost Sector");
