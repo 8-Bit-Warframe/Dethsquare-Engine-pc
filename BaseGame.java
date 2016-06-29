@@ -1,6 +1,5 @@
 package com.ezardlabs.dethsquare.util;
 
-import com.ezardlabs.dethsquare.Collider;
 import com.ezardlabs.dethsquare.GameObject;
 import com.ezardlabs.dethsquare.Input;
 import com.ezardlabs.dethsquare.Input.KeyCode;
@@ -367,9 +366,6 @@ public abstract class BaseGame extends JFrame {
 		setFocusable(true);
 		onResize((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(), (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 		create();
-		GameObject.startAll();
-		Renderer.init();
-		Collider.init();
 		setVisible(true);
 		vBuffer = createVolatileImage(getWidth(), getHeight());
 	}
