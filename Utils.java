@@ -106,6 +106,10 @@ public class Utils {
 		}
 	}
 
+	public static void destroyAllTextures(HashMap<String, int[]> textures) {
+		images.clear();
+	}
+
 	private static HashMap<AudioClip, Thread> playingAudio = new HashMap<>();
 
 	public static void playAudio(final AudioClip audioClip) {
