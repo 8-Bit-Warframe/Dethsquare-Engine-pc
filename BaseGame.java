@@ -13,6 +13,8 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.ImageObserver;
 import java.awt.image.VolatileImage;
 
@@ -362,6 +364,52 @@ public abstract class BaseGame extends JFrame {
 						Input.setKeyUp(KeyCode.F12);
 						break;
 				}
+			}
+		});
+		addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				switch(e.getButton()) {
+					case MouseEvent.BUTTON1:
+						Input.setKeyDown(KeyCode.MOUSE_LEFT);
+						break;
+					case MouseEvent.BUTTON2:
+						Input.setKeyDown(KeyCode.MOUSE_MIDDLE);
+						break;
+					case MouseEvent.BUTTON3:
+						Input.setKeyDown(KeyCode.MOUSE_RIGHT);
+						break;
+				}
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				switch(e.getButton()) {
+					case MouseEvent.BUTTON1:
+						Input.setKeyUp(KeyCode.MOUSE_LEFT);
+						break;
+					case MouseEvent.BUTTON2:
+						Input.setKeyUp(KeyCode.MOUSE_MIDDLE);
+						break;
+					case MouseEvent.BUTTON3:
+						Input.setKeyUp(KeyCode.MOUSE_RIGHT);
+						break;
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
 			}
 		});
 		setFocusable(true);
