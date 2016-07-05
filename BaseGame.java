@@ -5,6 +5,7 @@ import com.ezardlabs.dethsquare.Input;
 import com.ezardlabs.dethsquare.Input.KeyCode;
 import com.ezardlabs.dethsquare.Renderer;
 import com.ezardlabs.dethsquare.Screen;
+import com.ezardlabs.dethsquare.Time;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -396,6 +397,7 @@ public abstract class BaseGame extends JFrame {
 				e.printStackTrace();
 			}
 		}
+		Time.deltaTime = System.currentTimeMillis() - start;
 		repaint();
 	}
 
