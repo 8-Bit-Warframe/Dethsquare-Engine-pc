@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.ImageObserver;
 import java.awt.image.VolatileImage;
 
@@ -410,6 +411,17 @@ public abstract class BaseGame extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {
 
+			}
+		});
+		addMouseMotionListener(new MouseMotionListener() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Input.mousePosition.set(e.getX(), e.getY());
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				Input.mousePosition.set(e.getX(), e.getY());
 			}
 		});
 		setFocusable(true);
