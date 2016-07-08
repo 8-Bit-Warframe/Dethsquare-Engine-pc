@@ -8,7 +8,12 @@ import com.ezardlabs.dethsquare.util.audio.OggMusic;
 import org.apache.commons.io.IOUtils;
 
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.nio.charset.Charset;
@@ -127,7 +132,7 @@ public class Utils {
 				ogg.setMute(false);
 				try {
 					data = IOUtils.toByteArray(Thread.currentThread().getContextClassLoader()
-											  .getResourceAsStream(audioClip.getPath()));
+					                                 .getResourceAsStream(audioClip.getPath()));
 				} catch (IOException e) {
 					e.printStackTrace();
 					return;
@@ -144,6 +149,12 @@ public class Utils {
 	public static void stopAudio(AudioClip audioClip) {
 		if (playingAudio.containsKey(audioClip)) {
 			playingAudio.remove(audioClip).stop();
+		}
+	}
+
+	public static void stopAllAudio() {
+		for (Thread t : playingAudio.values()) {
+			t.stop();
 		}
 	}
 
