@@ -34,75 +34,52 @@
 package com.ezardlabs.dethsquare.util.audio.jcraft.jorbis;
 
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Buffer;
+
 /**
- * Floor function abstraction.
+ * Function mapping.
  * Comments and style correction by karnokd.
  * @author ymnk
  */
-abstract class FuncFloor {
-	/** Floor fucntions. */
-	public static FuncFloor[] floorP = { new Floor0(), new Floor1() };
+abstract class FuncMapping {
+	/** Function mapping implementations. */
+	public static FuncMapping[] mappingP = { new Mapping0() };
 	/**
-	 * Pack the object into the buffer.
-	 * @param i the object
-	 * @param opb the buffer
+	 * Pack.
+	 * @param info the info
+	 * @param imap the object
+	 * @param buffer the buffer
 	 */
-	abstract void pack(Object i, Buffer opb);
+	abstract void pack(Info info, Object imap, Buffer buffer);
 	/**
-	 * Unpack the object from the buffer.
-	 * @param vi the Info
-	 * @param opb the buffer
-	 * @return the unpacked object
-	 */
-	abstract Object unpack(Info vi, Buffer opb);
-	/**
-	 * Look at dsp state, info mode and object.
-	 * @param vd dsp state
-	 * @param mi info mode
-	 * @param i object
+	 * Unpack.
+	 * @param info the info
+	 * @param buffer the buffer
 	 * @return object
 	 */
-	abstract Object look(DspState vd, InfoMode mi, Object i);
+	abstract Object unpack(Info info, Buffer buffer);
+	/**
+	 * Look.
+	 * @param vd dsp state
+	 * @param vm info mode
+	 * @param m object
+	 * @return object
+	 */
+	abstract Object look(DspState vd, InfoMode vm, Object m);
 	/**
 	 * Free info.
-	 * @param i object
+	 * @param imap object
 	 */
-	abstract void freeInfo(Object i);
+	abstract void freeInfo(Object imap);
 	/**
-	 * Free look.
-	 * @param i object
+	 * Free look. 
+	 * @param imap object
 	 */
-	abstract void freeLook(Object i);
+	abstract void freeLook(Object imap);
 	/**
-	 * Free state.
-	 * @param vs object
-	 */
-	abstract void freeState(Object vs);
-	/**
-	 * Forward.
-	 * @param vb block
-	 * @param i object
-	 * @param in float array
-	 * @param out float array
-	 * @param vs object
+	 * Inverse.
+	 * @param vd block
+	 * @param lm object
 	 * @return int
 	 */
-	abstract int forward(Block vb, Object i, float[] in, float[] out, Object vs);
-	/**
-	 * Inverse 1.
-	 * @param vb block
-	 * @param i object
-	 * @param memo object
-	 * @return object
-	 */
-	abstract Object inverse1(Block vb, Object i, Object memo);
-	/**
-	 * Inverse 2.
-	 * @param vb block
-	 * @param i object
-	 * @param memo object
-	 * @param out float array
-	 * @return int
-	 */
-	abstract int inverse2(Block vb, Object i, Object memo, float[] out);
+	abstract int inverse(Block vd, Object lm);
 }

@@ -33,15 +33,16 @@
 
 package com.ezardlabs.dethsquare.util.audio.jcraft.jorbis;
 
+import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Packet;
+import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Page;
+import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.StreamState;
+import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.SyncState;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 
-import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Packet;
-import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Page;
-import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.StreamState;
-import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.SyncState;
 /**
  * Class to manage a Vorbis file.
  * Comments and style correction by karnokd.

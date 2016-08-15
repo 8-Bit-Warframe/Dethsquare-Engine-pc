@@ -34,52 +34,50 @@
 package com.ezardlabs.dethsquare.util.audio.jcraft.jorbis;
 
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Buffer;
+
 /**
- * Function time.
+ * Time zero.
  * Comments and style correction by karnokd.
  * @author ymnk
  */
-abstract class FuncTime {
-	/** Time instances. */
-	static FuncTime[] timeP = { new Time0() };
+class Time0 extends FuncTime {
 	/**
-	 * Pack.
-	 * @param i object
-	 * @param opb buffer
+	 * {@inheritDoc}
 	 */
-	abstract void pack(Object i, Buffer opb);
+	@Override
+	void pack(Object i, Buffer opb) {
+	}
 	/**
-	 * Unpack.
-	 * @param vi info
-	 * @param opb buffer
-	 * @return object
+	 * {@inheritDoc}
 	 */
-	abstract Object unpack(Info vi, Buffer opb);
+	@Override
+	Object unpack(Info vi, Buffer opb) {
+		return "";
+	}
 	/**
-	 * Look.
-	 * @param vd dsp state
-	 * @param vm info mode
-	 * @param i object
-	 * @return object
+	 * {@inheritDoc}
 	 */
-	abstract Object look(DspState vd, InfoMode vm, Object i);
+	@Override
+	Object look(DspState vd, InfoMode mi, Object i) {
+		return "";
+	}
 	/**
-	 * Free info.
-	 * @param i object
+	 * {@inheritDoc}
 	 */
-	abstract void freeInfo(Object i);
+	@Override
+	void freeInfo(Object i) {
+	}
 	/**
-	 * Free look.
-	 * @param i object
+	 * {@inheritDoc}
 	 */
-	abstract void freeLook(Object i);
+	@Override
+	void freeLook(Object i) {
+	}
 	/**
-	 * Inverse.
-	 * @param vb block
-	 * @param i object
-	 * @param in float array
-	 * @param out float array
-	 * @return int
+	 * {@inheritDoc}
 	 */
-	abstract int inverse(Block vb, Object i, float[] in, float[] out);
+	@Override
+	int inverse(Block vb, Object i, float[] in, float[] out) {
+		return 0;
+	}
 }
