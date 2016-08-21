@@ -1,8 +1,5 @@
 package com.ezardlabs.dethsquare.util;
 
-import com.ezardlabs.dethsquare.AudioSource.AudioClip;
-import com.ezardlabs.dethsquare.Camera;
-import com.ezardlabs.dethsquare.Screen;
 import com.ezardlabs.dethsquare.util.audio.OggMusic;
 
 import org.apache.commons.io.IOUtils;
@@ -78,7 +75,8 @@ public class Utils {
 	}
 
 	public static void render(int textureName, FloatBuffer vertexBuffer, FloatBuffer uvBuffer,
-			int numIndices, ShortBuffer indexBuffer) {
+			int numIndices, ShortBuffer indexBuffer, float cameraPosX, float cameraPosY, float
+			scale) {
 		temp = images.get(textureName);
 		float[] vertices = new float[vertexBuffer.capacity()];
 		vertexBuffer.position(0);
@@ -87,14 +85,16 @@ public class Utils {
 		uvBuffer.position(0);
 		uvBuffer.get(uvs);
 		for (int i = 0; i < numIndices / 6; i++) {
+//			System.out.println(textureName + ", " + ((int) (vertices[i * 12] - (cameraPosX *
+//					scale))) + ", " + ((int) (vertices[(i * 12) + 4] - (cameraPosY * scale))));
 			BaseGame.graphics.drawImage(temp,
-					(int) (vertices[i * 12] - (Camera.main.transform.position.x * Screen.scale)),
+					(int) (vertices[i * 12] - (cameraPosX * scale)),
 					(int) (vertices[(i * 12) + 4] -
-							(Camera.main.transform.position.y * Screen.scale)),
+							(cameraPosY * scale)),
 					(int) (vertices[(i * 12) + 6] -
-							(Camera.main.transform.position.x * Screen.scale)),
+							(cameraPosX * scale)),
 					(int) (vertices[(i * 12) + 10] -
-							(Camera.main.transform.position.y * Screen.scale)),
+							(cameraPosY * scale)),
 					(int) (uvs[i * 8] * temp.getWidth()),
 					(int) (uvs[(i * 8) + 5] * temp.getHeight()),
 					(int) (uvs[(i * 8) + 4] * temp.getWidth()),
@@ -102,26 +102,26 @@ public class Utils {
 		}
 	}
 
-	public static void onScreenSizeChanged(int width, int height) {
+	/*public static void onScreenSizeChanged(int width, int height) {
 		Camera.main.bounds.set(0, 0, width, height);
 	}
 
 	public static void setCameraPosition(Camera camera) {
 		if (camera != null) {
 		}
-	}
+	}*/
 
 	public static void destroyAllTextures(HashMap<String, int[]> textures) {
 		images.clear();
 	}
 
-	private static HashMap<AudioClip, Thread> playingAudio = new HashMap<>();
+	private static HashMap<Integer, Thread> playingAudio = new HashMap<>();
 
-	public static void playAudio(final AudioClip audioClip) {
-		playAudio(audioClip, false);
+	public static void playAudio(final int id, final String path) {
+		playAudio(id, path, false);
 	}
 
-	public static void playAudio(final AudioClip audioClip, final boolean loop) {
+	public static void playAudio(final int id, final String path, final boolean loop) {
 		Thread t = new Thread() {
 			byte[] data;
 
@@ -132,7 +132,7 @@ public class Utils {
 				ogg.setMute(false);
 				try {
 					data = IOUtils.toByteArray(Thread.currentThread().getContextClassLoader()
-					                                 .getResourceAsStream(audioClip.getPath()));
+					                                 .getResourceAsStream(path));
 				} catch (IOException e) {
 					e.printStackTrace();
 					return;
@@ -142,20 +142,18 @@ public class Utils {
 				} while(loop);
 			}
 		};
-		playingAudio.put(audioClip, t);
+		playingAudio.put(id, t);
 		t.start();
 	}
 
-	public static void stopAudio(AudioClip audioClip) {
-		if (playingAudio.containsKey(audioClip)) {
-			playingAudio.remove(audioClip).stop();
+	public static void stopAudio(int id) {
+		if (playingAudio.containsKey(id)) {
+			playingAudio.remove(id).stop();
 		}
 	}
 
 	public static void stopAllAudio() {
-		for (Thread t : playingAudio.values()) {
-			t.stop();
-		}
+		playingAudio.values().forEach(Thread::stop);
 	}
 
 	public static void setBoolean(String key, boolean value) {

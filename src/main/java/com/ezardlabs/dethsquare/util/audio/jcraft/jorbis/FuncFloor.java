@@ -34,49 +34,76 @@
 package com.ezardlabs.dethsquare.util.audio.jcraft.jorbis;
 
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Buffer;
+
 /**
- * Time zero.
+ * Floor function abstraction.
  * Comments and style correction by karnokd.
  * @author ymnk
  */
-class Time0 extends FuncTime {
+abstract class FuncFloor {
+	/** Floor fucntions. */
+	public static FuncFloor[] floorP = { new Floor0(), new Floor1() };
 	/**
-	 * {@inheritDoc}
+	 * Pack the object into the buffer.
+	 * @param i the object
+	 * @param opb the buffer
 	 */
-	@Override
-	void pack(Object i, Buffer opb) {
-	}
+	abstract void pack(Object i, Buffer opb);
 	/**
-	 * {@inheritDoc}
+	 * Unpack the object from the buffer.
+	 * @param vi the Info
+	 * @param opb the buffer
+	 * @return the unpacked object
 	 */
-	@Override
-	Object unpack(Info vi, Buffer opb) {
-		return "";
-	}
+	abstract Object unpack(Info vi, Buffer opb);
 	/**
-	 * {@inheritDoc}
+	 * Look at dsp state, info mode and object.
+	 * @param vd dsp state
+	 * @param mi info mode
+	 * @param i object
+	 * @return object
 	 */
-	@Override
-	Object look(DspState vd, InfoMode mi, Object i) {
-		return "";
-	}
+	abstract Object look(DspState vd, InfoMode mi, Object i);
 	/**
-	 * {@inheritDoc}
+	 * Free info.
+	 * @param i object
 	 */
-	@Override
-	void freeInfo(Object i) {
-	}
+	abstract void freeInfo(Object i);
 	/**
-	 * {@inheritDoc}
+	 * Free look.
+	 * @param i object
 	 */
-	@Override
-	void freeLook(Object i) {
-	}
+	abstract void freeLook(Object i);
 	/**
-	 * {@inheritDoc}
+	 * Free state.
+	 * @param vs object
 	 */
-	@Override
-	int inverse(Block vb, Object i, float[] in, float[] out) {
-		return 0;
-	}
+	abstract void freeState(Object vs);
+	/**
+	 * Forward.
+	 * @param vb block
+	 * @param i object
+	 * @param in float array
+	 * @param out float array
+	 * @param vs object
+	 * @return int
+	 */
+	abstract int forward(Block vb, Object i, float[] in, float[] out, Object vs);
+	/**
+	 * Inverse 1.
+	 * @param vb block
+	 * @param i object
+	 * @param memo object
+	 * @return object
+	 */
+	abstract Object inverse1(Block vb, Object i, Object memo);
+	/**
+	 * Inverse 2.
+	 * @param vb block
+	 * @param i object
+	 * @param memo object
+	 * @param out float array
+	 * @return int
+	 */
+	abstract int inverse2(Block vb, Object i, Object memo, float[] out);
 }

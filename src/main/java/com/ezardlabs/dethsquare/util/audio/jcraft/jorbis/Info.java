@@ -35,6 +35,7 @@ package com.ezardlabs.dethsquare.util.audio.jcraft.jorbis;
 
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Buffer;
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Packet;
+
 /**
  * Info object.
  * Comments and style correction by karnokd.

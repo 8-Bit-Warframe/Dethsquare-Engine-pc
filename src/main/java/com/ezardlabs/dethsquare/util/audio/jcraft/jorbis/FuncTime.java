@@ -34,51 +34,53 @@
 package com.ezardlabs.dethsquare.util.audio.jcraft.jorbis;
 
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Buffer;
+
 /**
- * Function mapping.
+ * Function time.
  * Comments and style correction by karnokd.
  * @author ymnk
  */
-abstract class FuncMapping {
-	/** Function mapping implementations. */
-	public static FuncMapping[] mappingP = { new Mapping0() };
+abstract class FuncTime {
+	/** Time instances. */
+	static FuncTime[] timeP = { new Time0() };
 	/**
 	 * Pack.
-	 * @param info the info
-	 * @param imap the object
-	 * @param buffer the buffer
+	 * @param i object
+	 * @param opb buffer
 	 */
-	abstract void pack(Info info, Object imap, Buffer buffer);
+	abstract void pack(Object i, Buffer opb);
 	/**
 	 * Unpack.
-	 * @param info the info
-	 * @param buffer the buffer
+	 * @param vi info
+	 * @param opb buffer
 	 * @return object
 	 */
-	abstract Object unpack(Info info, Buffer buffer);
+	abstract Object unpack(Info vi, Buffer opb);
 	/**
 	 * Look.
 	 * @param vd dsp state
 	 * @param vm info mode
-	 * @param m object
+	 * @param i object
 	 * @return object
 	 */
-	abstract Object look(DspState vd, InfoMode vm, Object m);
+	abstract Object look(DspState vd, InfoMode vm, Object i);
 	/**
 	 * Free info.
-	 * @param imap object
+	 * @param i object
 	 */
-	abstract void freeInfo(Object imap);
+	abstract void freeInfo(Object i);
 	/**
-	 * Free look. 
-	 * @param imap object
+	 * Free look.
+	 * @param i object
 	 */
-	abstract void freeLook(Object imap);
+	abstract void freeLook(Object i);
 	/**
 	 * Inverse.
-	 * @param vd block
-	 * @param lm object
+	 * @param vb block
+	 * @param i object
+	 * @param in float array
+	 * @param out float array
 	 * @return int
 	 */
-	abstract int inverse(Block vd, Object lm);
+	abstract int inverse(Block vb, Object i, float[] in, float[] out);
 }

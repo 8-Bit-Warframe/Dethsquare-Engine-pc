@@ -35,6 +35,7 @@ package com.ezardlabs.dethsquare.util.audio.jcraft.jorbis;
 
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Buffer;
 import com.ezardlabs.dethsquare.util.audio.jcraft.jogg.Packet;
+
 /**
  * The comments are not part of vorbis_info so that vorbis_info can be
  * static storage.
