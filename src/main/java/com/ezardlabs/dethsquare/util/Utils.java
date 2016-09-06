@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.nio.charset.Charset;
@@ -22,7 +23,7 @@ import javax.imageio.ImageIO;
 
 public class Utils {
 	public static final Platform PLATFORM = Platform.DESKTOP;
-	public static String assetsPath = "assets/";
+	public static String assetsPath = "app/src/main/java/resources/";
 	public static String overrideAssetsPath = null;
 	private static final ArrayList<BufferedImage> images = new ArrayList<>();
 	private static BufferedImage temp = null;
@@ -35,6 +36,32 @@ public class Utils {
 
 	public static void init() {
 
+	}
+
+	public static String[] getAllFileNames(String dirPath) {
+		File folder = null;
+		try {
+			URL url = Thread.currentThread().getContextClassLoader().getResource(dirPath);
+			if(url == null) {
+				return new String[0];
+			}
+			String path = url.getPath();
+			folder = new File(path);
+			if (folder == null) {
+				return null;
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		File[] listOfFiles = folder.listFiles();
+		String[] fileNames = new String[listOfFiles.length];
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				fileNames[i] = listOfFiles[i].getName();
+			}
+		}
+		return fileNames;
 	}
 
 	public static int[] loadImage(String path) {
