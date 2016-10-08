@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.nio.charset.Charset;
@@ -46,7 +47,7 @@ public class Utils {
 				return new String[0];
 			}
 			String path = url.getPath();
-			folder = new File(path);
+			folder = new File(URLDecoder.decode(path, "UTF-8"));
 			if (folder == null) {
 				return null;
 			}
