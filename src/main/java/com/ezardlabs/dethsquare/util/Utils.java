@@ -8,11 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.nio.charset.Charset;
@@ -40,29 +37,20 @@ public class Utils {
 	}
 
 	public static String[] getAllFileNames(String dirPath) {
-		File folder = null;
-		try {
-			URL url = Thread.currentThread().getContextClassLoader().getResource(dirPath);
-			if(url == null) {
-				return new String[0];
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(Thread
+				.currentThread().getContextClassLoader().getResourceAsStream(dirPath + "/files" +
+						".lsd")))) {
+			ArrayList<String> list = new ArrayList<>();
+			String temp;
+			while((temp = reader.readLine()) != null) {
+				list.add(temp);
 			}
-			String path = url.getPath();
-			folder = new File(URLDecoder.decode(path, "UTF-8"));
-			if (folder == null) {
-				return null;
-			}
-		} catch(Exception ex) {
-			ex.printStackTrace();
+			return list.toArray(new String[list.size()]);
+		} catch (IOException e) {
+			System.err.println("Failed to load " + dirPath + "files.lsd");
+			e.printStackTrace();
+			return new String[0];
 		}
-		File[] listOfFiles = folder.listFiles();
-		String[] fileNames = new String[listOfFiles.length];
-
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				fileNames[i] = listOfFiles[i].getName();
-			}
-		}
-		return fileNames;
 	}
 
 	public static int[] loadImage(String path) {
@@ -91,15 +79,6 @@ public class Utils {
 		return new BufferedReader(new InputStreamReader(
 				Thread.currentThread().getContextClassLoader()
 					  .getResourceAsStream(path)));
-	}
-
-	public static File loadFile(String path) throws IOException {
-		if(overrideAssetsPath != null) {
-			path = overrideAssetsPath + path;
-		} else {
-			path = assetsPath + path;
-		}
-		return new File(path);
 	}
 
 	public static void render(int textureName, FloatBuffer vertexBuffer, FloatBuffer uvBuffer,
