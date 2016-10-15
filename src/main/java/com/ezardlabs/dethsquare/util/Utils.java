@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.nio.charset.Charset;
@@ -56,6 +58,11 @@ public class Utils {
 	public static int[] loadImage(String path) {
 		if(overrideAssetsPath != null) {
 			path = overrideAssetsPath + path;
+		}
+		try {
+			path = new URI(path).normalize().getPath();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
 		if (Thread.currentThread().getContextClassLoader()
 				  .getResourceAsStream(path) == null)
