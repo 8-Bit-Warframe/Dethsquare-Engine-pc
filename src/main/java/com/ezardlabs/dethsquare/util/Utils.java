@@ -129,35 +129,56 @@ public class Utils {
 		images.clear();
 	}
 
-	private static HashMap<Integer, Thread> playingAudio = new HashMap<>();
+	private static HashMap<Integer, AudioThread> playingAudio = new HashMap<>();
 
-	public static void playAudio(final int id, final String path) {
-		playAudio(id, path, false);
+	static class AudioThread extends Thread {
+		private final String path;
+		private boolean loop = false;
+		private byte[] data;
+		private OggMusic ogg;
+
+		AudioThread(String path) {
+			this.path = path;
+		}
+
+		void setLoop(boolean loop) {
+			this.loop = loop;
+		}
+
+		void setVolume(int volume) {
+			ogg.setVolume(volume);
+		}
+
+		@Override
+		public void run() {
+			ogg = new OggMusic(Thread.currentThread());
+			ogg.setVolume(100);
+			ogg.setMute(false);
+			try {
+				data = IOUtils.toByteArray(Thread.currentThread().getContextClassLoader()
+												 .getResourceAsStream(path));
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+			do {
+				ogg.playOgg(new ByteArrayInputStream(data));
+			} while(loop);
+		}
 	}
 
-	public static void playAudio(final int id, final String path, final boolean loop) {
-		Thread t = new Thread() {
-			byte[] data;
+	public static void playAudio(final int id, final String path) {
+		AudioThread at = new AudioThread(path);
+		playingAudio.put(id, at);
+		at.start();
+	}
 
-			@Override
-			public void run() {
-				OggMusic ogg = new OggMusic(Thread.currentThread());
-				ogg.setVolume(100);
-				ogg.setMute(false);
-				try {
-					data = IOUtils.toByteArray(Thread.currentThread().getContextClassLoader()
-					                                 .getResourceAsStream(path));
-				} catch (IOException e) {
-					e.printStackTrace();
-					return;
-				}
-				do {
-					ogg.playOgg(new ByteArrayInputStream(data));
-				} while(loop);
-			}
-		};
-		playingAudio.put(id, t);
-		t.start();
+	public static void setAudioLoop(int id, boolean loop) {
+		playingAudio.get(id).setLoop(loop);
+	}
+
+	public static void setAudioVolume(int id, int volume) {
+		playingAudio.get(id).setVolume(volume);
 	}
 
 	public static void stopAudio(int id) {
