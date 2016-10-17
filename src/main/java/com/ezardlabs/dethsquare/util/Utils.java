@@ -134,6 +134,7 @@ public class Utils {
 	static class AudioThread extends Thread {
 		private final String path;
 		private boolean loop = false;
+		private int volume = 100;
 		private byte[] data;
 		private OggMusic ogg;
 
@@ -146,13 +147,14 @@ public class Utils {
 		}
 
 		void setVolume(int volume) {
-			ogg.setVolume(volume);
+			this.volume = volume;
+			if (ogg != null) ogg.setVolume(volume);
 		}
 
 		@Override
 		public void run() {
 			ogg = new OggMusic(Thread.currentThread());
-			ogg.setVolume(100);
+			ogg.setVolume(volume);
 			ogg.setMute(false);
 			try {
 				data = IOUtils.toByteArray(Thread.currentThread().getContextClassLoader()
