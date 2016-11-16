@@ -1,27 +1,16 @@
 package com.ezardlabs.dethsquare.util;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.prefs.Preferences;
-
-import javax.imageio.ImageIO;
 
 public class Utils {
 	public static final Platform PLATFORM = Platform.DESKTOP;
 	public static String assetsPath = "app/src/main/java/resources/";
 	public static String overrideAssetsPath = null;
-	private static final ArrayList<BufferedImage> images = new ArrayList<>();
-	private static BufferedImage temp = null;
 	private static final Preferences prefs = Preferences.userRoot().node("com/ezardlabs/lostsector");
 
 	public enum Platform {
@@ -50,30 +39,6 @@ public class Utils {
 		}
 	}
 
-	public static int[] loadImage(String path) {
-		if(overrideAssetsPath != null) {
-			path = overrideAssetsPath + path;
-		}
-		try {
-			path = new URI(path).normalize().getPath();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		if (Thread.currentThread().getContextClassLoader()
-				  .getResourceAsStream(path) == null)
-			throw new Error("Image at " + path + " could not be " +
-					"found");
-		try {
-			images.add(temp = ImageIO.read(new BufferedInputStream(
-					Thread.currentThread().getContextClassLoader()
-						  .getResourceAsStream(path))));
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new int[3];
-		}
-		return new int[]{images.size() - 1, temp.getWidth(), temp.getHeight()};
-	}
-
 	public static BufferedReader getReader(String path) throws IOException {
 		if(overrideAssetsPath != null) {
 			path = overrideAssetsPath + path;
@@ -81,34 +46,6 @@ public class Utils {
 		return new BufferedReader(new InputStreamReader(
 				Thread.currentThread().getContextClassLoader()
 					  .getResourceAsStream(path)));
-	}
-
-	public static void render(int textureName, FloatBuffer vertexBuffer, FloatBuffer uvBuffer,
-			int numIndices, ShortBuffer indexBuffer, float cameraPosX, float cameraPosY, float
-			scale) {
-		temp = images.get(textureName);
-		float[] vertices = new float[vertexBuffer.capacity()];
-		vertexBuffer.position(0);
-		vertexBuffer.get(vertices);
-		float[] uvs = new float[uvBuffer.capacity()];
-		uvBuffer.position(0);
-		uvBuffer.get(uvs);
-		for (int i = 0; i < numIndices / 6; i++) {
-//			System.out.println(textureName + ", " + ((int) (vertices[i * 12] - (cameraPosX *
-//					scale))) + ", " + ((int) (vertices[(i * 12) + 4] - (cameraPosY * scale))));
-			BaseGame.graphics.drawImage(temp,
-					(int) (vertices[i * 12] - (cameraPosX * scale)),
-					(int) (vertices[(i * 12) + 4] -
-							(cameraPosY * scale)),
-					(int) (vertices[(i * 12) + 6] -
-							(cameraPosX * scale)),
-					(int) (vertices[(i * 12) + 10] -
-							(cameraPosY * scale)),
-					(int) (uvs[i * 8] * temp.getWidth()),
-					(int) (uvs[(i * 8) + 5] * temp.getHeight()),
-					(int) (uvs[(i * 8) + 4] * temp.getWidth()),
-					(int) (uvs[(i * 8) + 1] * temp.getHeight()), BaseGame.imageObserver);
-		}
 	}
 
 	/*public static void onScreenSizeChanged(int width, int height) {
@@ -119,10 +56,6 @@ public class Utils {
 		if (camera != null) {
 		}
 	}*/
-
-	public static void destroyAllTextures(HashMap<String, int[]> textures) {
-		images.clear();
-	}
 
 	public static void setBoolean(String key, boolean value) {
 		prefs.putBoolean(key, value);
