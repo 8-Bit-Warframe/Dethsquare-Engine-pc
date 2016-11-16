@@ -5,8 +5,6 @@ import java.util.prefs.Preferences;
 
 public class Utils {
 	public static final Platform PLATFORM = Platform.DESKTOP;
-	public static String assetsPath = "app/src/main/java/resources/";
-	public static String overrideAssetsPath = null;
 	private static final Preferences prefs = Preferences.userRoot().node("com/ezardlabs/lostsector");
 
 	public enum Platform {
@@ -14,18 +12,9 @@ public class Utils {
 		DESKTOP
 	}
 
+	// Not used on this platform
 	public static void init() {
-
 	}
-
-	/*public static void onScreenSizeChanged(int width, int height) {
-		Camera.main.bounds.set(0, 0, width, height);
-	}
-
-	public static void setCameraPosition(Camera camera) {
-		if (camera != null) {
-		}
-	}*/
 
 	public static void setBoolean(String key, boolean value) {
 		prefs.putBoolean(key, value);
