@@ -15,6 +15,13 @@ import javax.imageio.ImageIO;
 public class RenderUtils {
 	private static final ArrayList<BufferedImage> images = new ArrayList<>();
 
+	private static class ImageNotFoundError extends Error {
+
+		ImageNotFoundError(String path) {
+			super("Image at " + path + " could not be found");
+		}
+	}
+
 	public static int[] loadImage(String path) {
 		try {
 			path = new URI(path).normalize().getPath();
@@ -22,7 +29,7 @@ public class RenderUtils {
 			e.printStackTrace();
 		}
 		if (Thread.currentThread().getContextClassLoader().getResourceAsStream(path) == null) {
-			throw new Error("Image at " + path + " could not be found");
+			throw new ImageNotFoundError(path);
 		}
 		BufferedImage temp;
 		try {
