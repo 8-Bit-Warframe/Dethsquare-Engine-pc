@@ -131,22 +131,22 @@ public class Utils {
 
 	private static HashMap<Integer, AudioThread> playingAudio = new HashMap<>();
 
-	static class AudioThread extends Thread {
+	private static class AudioThread extends Thread {
 		private final String path;
 		private boolean loop = false;
 		private int volume = 100;
 		private byte[] data;
 		private OggMusic ogg;
 
-		AudioThread(String path) {
+		private AudioThread(String path) {
 			this.path = path;
 		}
 
-		void setLoop(boolean loop) {
+		private void setLoop(boolean loop) {
 			this.loop = loop;
 		}
 
-		void setVolume(int volume) {
+		private void setVolume(int volume) {
 			this.volume = volume;
 			if (ogg != null) ogg.setVolume(volume);
 		}
