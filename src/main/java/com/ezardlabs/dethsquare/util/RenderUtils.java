@@ -23,18 +23,22 @@ public class RenderUtils {
 	}
 
 	public static int[] loadImage(String path) {
+		String normalisedPath;
 		try {
-			path = new URI(path).normalize().getPath();
+			normalisedPath = new URI(path).normalize().getPath();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
+			normalisedPath = path;
 		}
-		if (Thread.currentThread().getContextClassLoader().getResourceAsStream(path) == null) {
-			throw new ImageNotFoundError(path);
+		if (Thread.currentThread().getContextClassLoader().getResourceAsStream(normalisedPath) ==
+				null) {
+			throw new ImageNotFoundError(normalisedPath);
 		}
 		BufferedImage temp;
 		try {
 			images.add(temp = ImageIO.read(new BufferedInputStream(
-					Thread.currentThread().getContextClassLoader().getResourceAsStream(path))));
+					Thread.currentThread().getContextClassLoader()
+						  .getResourceAsStream(normalisedPath))));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new int[3];
