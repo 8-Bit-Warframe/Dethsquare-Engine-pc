@@ -12,8 +12,8 @@ public class Utils {
 		DESKTOP
 	}
 
-	// Not used on this platform
 	public static void init() {
+		// Not used on this platform
 	}
 
 	public static void setBoolean(String key, boolean value) {
