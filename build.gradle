@@ -11,6 +11,10 @@ buildscript {
 
 group = "com.github.8-Bit-Warframe"
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile group: 'org.jogamp.gluegen', name: 'gluegen-rt-main', version: '2.3.1'
